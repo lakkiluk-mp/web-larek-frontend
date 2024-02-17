@@ -1,64 +1,59 @@
-export type LotCategory ='софт-скил' | 'другое' | 'дополнительное' | 'кнопка' | 'хард-скил'
+//категория карточек 
+export type LotCategory =
+	| 'софт-скил'
+	| 'другое'
+	| 'дополнительное'
+	| 'кнопка'
+	| 'хард-скил';
 
 
+//лот
 export interface ILotItem {
-    title: string;
-    id: string;
-    description?: string;
-    image: string;
-    category:LotCategory
-    price: string;
+	title: string;
+	id: string;
+	description?: string;
+	image: string;
+	category: LotCategory;
+	price: string;
 }
 
-
-export interface ILotOrder{
-    oreder:boolean  
+// отслеживание карточки 
+export interface ILotOrder {
+	oreder: boolean;
 }
 
 export type ILot = ILotItem & ILotOrder;
 
-//вариант платежей 
+//вариант платежей
 
-export type Payment =  "offline" | "online";
+export type Payment = 'offline' | 'online';
+
 
 export interface PaymentDeliveryForm {
-    adress: string;
-    payment:Payment
+	adress: string;
+	payment: Payment;
 }
 
 export interface IEmailTelForm {
-    email:string;
-    tel:string
+	email: string;
+	tel: string;
 }
 
+export type IOrderForm = PaymentDeliveryForm & IEmailTelForm;
 
-export type IOrderForm = PaymentDeliveryForm  & IEmailTelForm
-
-interface IOrder extends IOrderForm{
-    items:ILot[]
+export interface IOrder extends IOrderForm {
+	items: ILot[];
 }
-
 
 export type CatalogChangeEvent = {
-    catalog: ILot[]
-}
+	catalog: ILot[];
+};
 
-
-export type IBasketItem = Pick<ILot, 'id' | 'title' | 'price'>
 
 export interface IAppState {
-    catalog: ILot[];
-    basket: IBasketItem[];
-    preview: string | null;
-    order: IOrder | null;
-    loading: boolean;
-}
-
-
-
-export type FormErrors = Partial<Record<keyof IOrder, string>>;
-
-
-export interface IOrderResult {
-    id: string;
+	catalog: ILot[];
+	basket: ILot[];
+	preview: string | null;
+	order: IOrder | null;
+	loading: boolean;
 }
