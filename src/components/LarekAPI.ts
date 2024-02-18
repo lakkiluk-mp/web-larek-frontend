@@ -1,10 +1,9 @@
 import { Api, ApiListResponse } from './base/api';
-import {IOrder, IOrderResult, ILot,} from "../types";
+import {ILot,} from "../types";
 
 export interface IAuctionAPI {
     getLotList: () => Promise<ILot[]>;
     getLotItem: (id: string) => Promise<ILot>;
-    orderLots: (order: IOrder) => Promise<IOrderResult>;
 }
 
 export class AuctionAPI extends Api implements IAuctionAPI {
@@ -33,10 +32,10 @@ export class AuctionAPI extends Api implements IAuctionAPI {
         );
     }
 
-    orderLots(order: IOrder): Promise<IOrderResult> {
-        return this.post('/order', order).then(
-            (data: IOrderResult) => data
-        );
-    }
+    // orderLots(order: IOrder): Promise<IOrderResult> {
+    //     return this.post('/order', order).then(
+    //         (data: IOrderResult) => data
+    //     );
+    // }
 
 }

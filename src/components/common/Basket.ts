@@ -1,5 +1,5 @@
 import {Component} from "../base/Component";
-import {createElement, ensureElement} from "../../utils/utils";
+import { createElement, ensureElement} from "../../utils/utils";
 import {EventEmitter} from "../base/events";
 
 interface IBasketView {
@@ -48,6 +48,6 @@ export class Basket extends Component<IBasketView> {
     }
 
     set total(total: number) {
-        this.setText(this._total, formatNumber(total));
+        // this.setText(this._total, formatNumber(total));
     }
 }
