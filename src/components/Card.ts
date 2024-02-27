@@ -1,106 +1,148 @@
-import {Component} from "./base/Component";
-import {ILot} from "../types";
-import {bem, createElement, ensureElement, formatNumber} from "../utils/utils";
-import clsx from "clsx";
+import { Component } from './base/Component';
+import { ILot } from '../types';
+import {
+	bem,
+	createElement,
+	ensureElement,
+	formatNumber,
+} from '../utils/utils';
+import clsx from 'clsx';
 
 interface ICardActions {
-    onClick: (event: MouseEvent) => void;
+	onClick: (event: MouseEvent) => void;
 }
 
 export interface ICard<T> {
-    title: string;
-    description?: string | string[];
-    image: string;
-    price: number;
+	title: string;
+	description?: string | string[];
+	image: string;
+	price: number | null;
+	category: string;
 }
 
 export class Card<T> extends Component<ICard<T>> {
-    protected _id: HTMLElement;
-    protected _title: HTMLElement;
-    protected _image?: HTMLImageElement;
-    protected _description?: HTMLElement;
-    protected _button?: HTMLButtonElement;
+	protected _id: HTMLElement;
+	protected _title: HTMLElement;
+	protected _image?: HTMLImageElement;
+	protected _description?: HTMLElement;
+	protected _button?: HTMLButtonElement;
+	protected _categoty?: HTMLElement;
+	protected _price?: HTMLElement;
 
-    constructor(protected blockName: string, container: HTMLElement, actions?: ICardActions) {
-        super(container);
+	constructor(
+		protected blockName: string,
+		container: HTMLElement,
+		actions?: ICardActions
+	) {
+		super(container);
 
-        this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
-        this._image = ensureElement<HTMLImageElement>(`.${blockName}__image`, container);
-        this._button = container.querySelector(`.${blockName}__button`);
-        this._description = container.querySelector(`.${blockName}__description`);
+		this._title = ensureElement<HTMLElement>(`.${blockName}__title`, container);
+		this._image = ensureElement<HTMLImageElement>(
+			`.${blockName}__image`,
+			container
+		);
+		this._button = container.querySelector(`.${blockName}__button`);
+		// this._description = container.querySelector(`.${blockName}__description`);
+		// this._categoty = container.querySelector(`.${blockName}__category`);
+		this._price = container.querySelector(`.${blockName}__price`);
 
-        if (actions?.onClick) {
-            if (this._button) {
-                this._button.addEventListener('click', actions.onClick);
-            } else {
-                container.addEventListener('click', actions.onClick);
-            }
+		if (actions?.onClick) {
+			if (this._button) {
+				this._button.addEventListener('click', actions.onClick);
+			} else {
+				container.addEventListener('click', actions.onClick);
+			}
+		}
+	}
+
+	set id(value: string) {
+		this.container.dataset.id = value;
+	}
+
+	get id(): string {
+		return this.container.dataset.id || '';
+	}
+
+	set price(value: string) {
+		if (value == null) {
+			this.setText(this._price, 'Бесценно');
+		} else {
+			this.setText(this._price, value + ' синапсов');
+		}
+	}
+
+	get price(): string {
+		return this._price.textContent || '';
+	}
+
+	set category(value: string) {
+
+        const categoryElement = this.container.querySelector(`.${this.blockName}__category`);
+        categoryElement.textContent = value;
+        let categoryValue = '';
+        switch (value) {
+            case 'софт-скил':
+                categoryValue = 'soft';
+                break;
+            case 'другое':
+                categoryValue = 'other';
+                break;
+            case 'кнопка':
+                categoryValue = 'button';
+                break;
+            case 'хард-скил':
+                categoryValue = 'hard';
+                break;
+            case 'дополнительное':
+                categoryValue = 'additional';
+                break;
+            default:
+                categoryValue = '';
+                break;
         }
-    }
+        categoryElement.classList.add(`${this.blockName}__category_${categoryValue}`); 
+	}
 
-    set id(value: string) {
-        this.container.dataset.id = value;
-    }
+	get category(): string {
+		return this._categoty.textContent || '';
+	}
 
-    get id(): string {
-        return this.container.dataset.id || '';
-    }
+	set title(value: string) {
+		this.setText(this._title, value);
+	}
 
-    set price(value: string) {
-        this.container.dataset.price = value;
-    }
+	get title(): string {
+		return this._title.textContent || '';
+	}
 
-    get price(): string {
-        return this.container.dataset.price || '';
+	set image(value: string) {
+		this.setImage(this._image, value, this.title);
+	}
 
-    }
-
-    set category(value: string) {
-        this.container.dataset.category = value;
-    }
-
-    get category(): string {
-        return this.container.dataset.category || '';
-
-    }
-
-    set title(value: string) {
-        this.setText(this._title, value);
-    }
-
-    get title(): string {
-        return this._title.textContent || '';
-    }
-
-
-    set image(value: string) {
-        this.setImage(this._image, value, this.title)
-    }
-
-    set description(value: string | string[]) {
-        if (Array.isArray(value)) {
-            this._description.replaceWith(...value.map(str => {
-                const descTemplate = this._description.cloneNode() as HTMLElement;
-                this.setText(descTemplate, str);
-                return descTemplate;
-            }));
-        } else {
-            this.setText(this._description, value);
-        }
-    }
+	// set description(value: string | string[]) {
+	//     if (Array.isArray(value)) {
+	//         this._description.replaceWith(...value.map(str => {
+	//             const descTemplate = this._description.cloneNode() as HTMLElement;
+	//             this.setText(descTemplate, str);
+	//             return descTemplate;
+	//         }));
+	//     } else {
+	//         this.setText(this._description, value);
+	//     }
+	// }
 }
 
 export class CatalogItem extends Card<HTMLElement> {
-    protected _status: HTMLElement;
+	protected _status: HTMLElement;
 
-    constructor(container: HTMLElement) {
-        super('lot', container);
-        this._status = ensureElement<HTMLElement>(`.lot__status`, container);
-    }
+	constructor(container: HTMLElement) {
+		super('lot', container);
+		this._status = ensureElement<HTMLElement>(`.lot__status`, container);
+	}
 
-    set status(content: HTMLElement) {
-        this._status.replaceWith(content);
-    }
+	set status(content: HTMLElement) {
+		this._status.replaceWith(content);
+	}
 }
 
 // export type CatalogItemStatus = {

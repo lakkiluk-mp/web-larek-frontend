@@ -9,7 +9,7 @@ import './scss/styles.scss';
 import { CatalogChangeEvent } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ensureElement, cloneTemplate } from './utils/utils';
-import { Card, CatalogItem } from './components/Card'
+import { Card } from './components/Card'
 
 
 
@@ -51,13 +51,13 @@ const appState = new AppState({}, events);
 
 // запрос карточек 
 api.getLotList()
-    .then(appState.setCatalog)
+    .then(appState.setCatalog.bind(appState))
     .catch(err => {
         console.error(err);
     });
 
 // Изменились элементы каталога
-events.on<CatalogChangeEvent>('items:changed', () => {
+events.on<CatalogChangeEvent>('catalog:changed', () => {
     page.catalog = appState.catalog.map(item => {
         const card = new Card("card",cloneTemplate(cardCatalogTemplate), 
         {
@@ -68,6 +68,7 @@ events.on<CatalogChangeEvent>('items:changed', () => {
             image: item.image,
             // description: item.about,
             price:item.price,
+            category:item.category
   
         });
 

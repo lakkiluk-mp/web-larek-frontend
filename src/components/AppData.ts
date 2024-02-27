@@ -33,14 +33,6 @@ export class AppState extends Model<IAppState> {
     preview: string | null;
     formErrors: IFormErrors = {};
 
-    // toggleOrderedLot(id: string, isIncluded: boolean) {
-    //     if (isIncluded) {
-    
-    //         this.order.items = _.uniq([...this.order.items, id]);
-    //     } else {
-    //         this.order.items = _.without(this.order.items, id);
-    //     }
-    // }
     constructor(data:Partial<IAppState>,events: IEvents) {
         super(data, events);
         this.events = events;
@@ -50,6 +42,19 @@ export class AppState extends Model<IAppState> {
         this.catalog = items.map(item => new LotItem(item, this.events));
         this.emitChanges('catalog:changed', { catalog: this.catalog });
     }
+
+
+
+
+    // toggleOrderedLot(id: string, isIncluded: boolean) {
+    //     if (isIncluded) {
+    
+    //         this.order.items = _.uniq([...this.order.items, id]);
+    //     } else {
+    //         this.order.items = _.without(this.order.items, id);
+    //     }
+    // }
+
 
 
     // clearBasket() {
