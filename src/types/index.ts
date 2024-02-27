@@ -1,43 +1,36 @@
-//категория карточек 
-export type LotCategory =
-	| 'софт-скил'
-	| 'другое'
-	| 'дополнительное'
-	| 'кнопка'
-	| 'хард-скил';
 
-
-//лот
+//Карточка 
 export interface ILotItem {
-	title: string;
 	id: string;
-	description?: string;
+	description: string;
 	image: string;
-	category: LotCategory;
+	title: string;
+	category: string;
 	price: number | null;
 }
 
-// отслеживание карточки 
+//Отслеживание карточки
 export interface ILotOrder {
 	isOredered: boolean;
 }
-
+//Общий тип лота 
 export type ILot = ILotItem & ILotOrder;
 
-//вариант платежей
-export type IPaymentType = 'offline' | 'online';
+//Выбор оплаты 
+export type IPaymentType = 'Онлайн' | 'При получении';
 
-
+//Интерфейс формы введения адреса и способа оплаты 
 export interface IOrderDeliveryForm {
-	adress: string;
+	address: string;
 	payment: IPaymentType;
 }
-
+//Интефрейс формы введения контактных данных 
 export interface IOrderContactsForm {
 	email: string;
 	tel: string;
 }
 
+//Общий тип формы заказа 
 export type IOrderForm = IOrderDeliveryForm & IOrderContactsForm;
 
 export interface IOrder extends IOrderForm {
@@ -45,20 +38,17 @@ export interface IOrder extends IOrderForm {
 }
 
 export interface IOrderAPI extends IOrderForm {
-	items: string[]; 
-	total: number; 
+	items: string[];
+	total: number;
 }
 
 export type CatalogChangeEvent = {
 	catalog: ILot[];
 };
 
-
 export type IFormErrors = Partial<Record<keyof IOrderForm, string>>;
 
-
 export type IBasketItem = Pick<ILot, 'id' | 'title' | 'price'>;
-
 
 export interface IAppState {
 	catalog: ILot[];

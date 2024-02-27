@@ -1,12 +1,13 @@
 import { Api, ApiListResponse } from './base/api';
-import {ILot,} from "../types";
+import {IOrder, IOrderAPI, ILot} from "../types";
 
-export interface IAuctionAPI {
+export interface ILarekAPI {
     getLotList: () => Promise<ILot[]>;
     getLotItem: (id: string) => Promise<ILot>;
+    orderLots: (order: IOrder) => Promise<IOrderAPI>;
 }
 
-export class AuctionAPI extends Api implements IAuctionAPI {
+export class LarekAPI extends Api implements ILarekAPI {
     readonly cdn: string;
 
     constructor(cdn: string, baseUrl: string, options?: RequestInit) {
@@ -23,6 +24,7 @@ export class AuctionAPI extends Api implements IAuctionAPI {
         );
     }
 
+
     getLotList(): Promise<ILot[]> {
         return this.get('/lot').then((data: ApiListResponse<ILot>) =>
             data.items.map((item) => ({
@@ -32,10 +34,12 @@ export class AuctionAPI extends Api implements IAuctionAPI {
         );
     }
 
-    // orderLots(order: IOrder): Promise<IOrderResult> {
-    //     return this.post('/order', order).then(
-    //         (data: IOrderResult) => data
-    //     );
-    // }
+
+    orderLots(order: IOrder): Promise<IOrderAPI> {
+        return this.post('/order', order).then(
+            (data: IOrderAPI) => data
+        );
+    }
 
 }
+

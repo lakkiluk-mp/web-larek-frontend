@@ -1,4 +1,3 @@
-// Хорошая практика даже простые типы выносить в алиасы
 // Зато когда захотите поменять это достаточно сделать в одном месте
 type EventName = string | RegExp;
 // eslint-disable-next-line @typescript-eslint/ban-types
