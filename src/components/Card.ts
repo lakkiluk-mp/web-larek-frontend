@@ -1,5 +1,6 @@
 import {Component} from "./base/Component";
-import { ensureElement} from "../utils/utils";
+import {ILot} from "../types";
+import {bem, createElement, ensureElement, formatNumber} from "../utils/utils";
 import clsx from "clsx";
 
 interface ICardActions {
@@ -10,10 +11,11 @@ export interface ICard<T> {
     title: string;
     description?: string | string[];
     image: string;
-    status: T;
+    price: number;
 }
 
 export class Card<T> extends Component<ICard<T>> {
+    protected _id: HTMLElement;
     protected _title: HTMLElement;
     protected _image?: HTMLImageElement;
     protected _description?: HTMLElement;
@@ -44,6 +46,24 @@ export class Card<T> extends Component<ICard<T>> {
         return this.container.dataset.id || '';
     }
 
+    set price(value: string) {
+        this.container.dataset.price = value;
+    }
+
+    get price(): string {
+        return this.container.dataset.price || '';
+
+    }
+
+    set category(value: string) {
+        this.container.dataset.category = value;
+    }
+
+    get category(): string {
+        return this.container.dataset.category || '';
+
+    }
+
     set title(value: string) {
         this.setText(this._title, value);
     }
@@ -51,6 +71,7 @@ export class Card<T> extends Component<ICard<T>> {
     get title(): string {
         return this._title.textContent || '';
     }
+
 
     set image(value: string) {
         this.setImage(this._image, value, this.title)
@@ -68,3 +89,46 @@ export class Card<T> extends Component<ICard<T>> {
         }
     }
 }
+
+export class CatalogItem extends Card<HTMLElement> {
+    protected _status: HTMLElement;
+
+    constructor(container: HTMLElement) {
+        super('lot', container);
+        this._status = ensureElement<HTMLElement>(`.lot__status`, container);
+    }
+
+    set status(content: HTMLElement) {
+        this._status.replaceWith(content);
+    }
+}
+
+// export type CatalogItemStatus = {
+//     status: ILotStatus,
+//     label: string
+// };
+
+// export class CatalogItem extends Card<CatalogItemStatus> {
+//     protected _status: HTMLElement;
+
+//     constructor(container: HTMLElement, actions?: ICardActions) {
+//         super('card', container, actions);
+//         this._status = ensureElement<HTMLElement>(`.card__status`, container);
+//     }
+
+//     set status({ status, label }: CatalogItemStatus) {
+//         this.setText(this._status, label);
+//         this._status.className = clsx('card__status', {
+//             [bem(this.blockName, 'status', 'active').name]: status === 'active',
+//             [bem(this.blockName, 'status', 'closed').name]: status === 'closed'
+//         });
+//     }
+// }
+
+// export type AuctionStatus = {
+//     status: string,
+//     time: string,
+//     label: string,
+//     nextBid: number,
+//     history: number[]
+// };

@@ -3,6 +3,7 @@ import {formatNumber} from "../utils/utils";
 
 import {Model} from "./base/Model";
 import {IFormErrors, IAppState,ILot, IOrder, IOrderForm, ILotOrder,} from "../types";
+import { EventEmitter, IEvents } from "./base/events";
 
 export type CatalogChangeEvent = {
     catalog: ILot[]
@@ -19,7 +20,9 @@ export class LotItem extends Model<ILot> {
     status: ILotOrder;
     category:string;
 
-
+    constructor(private data:Partial<ILot>, events: IEvents) {
+       super(data,events)
+    }
 }
 
 export class AppState extends Model<IAppState> {
@@ -38,6 +41,10 @@ export class AppState extends Model<IAppState> {
     //         this.order.items = _.without(this.order.items, id);
     //     }
     // }
+    constructor(data:Partial<IAppState>,events: IEvents) {
+        super(data, events);
+        this.events = events;
+    }
 
     setCatalog(items: ILot[]) {
         this.catalog = items.map(item => new LotItem(item, this.events));

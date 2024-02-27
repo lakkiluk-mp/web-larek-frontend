@@ -16,7 +16,7 @@ export class LarekAPI extends Api implements ILarekAPI {
     }
 
     getLotItem(id: string): Promise<ILot> {
-        return this.get(`/lot/${id}`).then(
+        return this.get(`/product/${id}`).then(
             (item: ILot) => ({
                 ...item,
                 image: this.cdn + item.image,
@@ -26,7 +26,7 @@ export class LarekAPI extends Api implements ILarekAPI {
 
 
     getLotList(): Promise<ILot[]> {
-        return this.get('/lot').then((data: ApiListResponse<ILot>) =>
+        return this.get('/product').then((data: ApiListResponse<ILot>) =>
             data.items.map((item) => ({
                 ...item,
                 image: this.cdn + item.image
