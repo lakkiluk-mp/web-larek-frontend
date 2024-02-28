@@ -1,4 +1,4 @@
-import { AppState } from './components/AppData';
+import { AppState, LotItem } from './components/AppData';
 import { LarekAPI } from './components/LarekAPI';
 import { Order } from './components/Order';
 import { Page } from './components/Page';
@@ -6,10 +6,10 @@ import { EventEmitter } from './components/base/events';
 import { Basket } from './components/common/Basket';
 import { Modal } from './components/common/Modal';
 import './scss/styles.scss';
-import { CatalogChangeEvent } from './types';
+import { CatalogChangeEvent, ILot } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ensureElement, cloneTemplate } from './utils/utils';
-import { Card } from './components/Card'
+import { AuctionItem, Card } from './components/Card'
 
 
 
@@ -25,19 +25,19 @@ events.onAll(({ eventName, data }) => {
 const cardCatalogTemplate = ensureElement<HTMLTemplateElement>('#card-catalog');
 const cardPreviewTemplate = ensureElement<HTMLTemplateElement>('#card-preview');
 // //заказ
-// const successTemplate = ensureElement<HTMLTemplateElement>('#success'); 
-// const orderTemplate = ensureElement<HTMLTemplateElement>('#order'); 
-// const contactTemplate = ensureElement<HTMLTemplateElement>('#contacts');
-// //карзина
-// const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
-// const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
+const successTemplate = ensureElement<HTMLTemplateElement>('#success'); 
+const orderTemplate = ensureElement<HTMLTemplateElement>('#order'); 
+const contactTemplate = ensureElement<HTMLTemplateElement>('#contacts');
+//карзина
+const basketTemplate = ensureElement<HTMLTemplateElement>('#basket');
+const cardBasketTemplate = ensureElement<HTMLTemplateElement>('#card-basket');
 
 // Модель данных приложения
 const appState = new AppState({}, events);
 
  // Глобальные контейнеры
  const page = new Page(document.body, events);
-// const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
+const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
 // const bascet = new Basket(cloneTemplate(bascetTemplate), events);
@@ -56,7 +56,7 @@ api.getLotList()
         console.error(err);
     });
 
-// Изменились элементы каталога
+// отрисовка карточек 
 events.on<CatalogChangeEvent>('catalog:changed', () => {
     page.catalog = appState.catalog.map(item => {
         const card = new Card("card",cloneTemplate(cardCatalogTemplate), 
@@ -75,3 +75,51 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
     })
         // page.counter = appData.getClosedLots().length;
     });
+
+// открытие модалки карточки событие
+    events.on('card:select', (item: LotItem) => {
+        appState.setPreview(item);
+        // console.log('sdsdsdsds')
+    });
+
+
+// Изменен открытый выбранный лот
+    events.on('card:open', (item: LotItem) => {
+    console.log('sdsdsd')
+
+    const showItem = (item: LotItem) => {
+        const card = new AuctionItem(cloneTemplate(cardPreviewTemplate));
+        modal.render({
+            content: card.render({
+                title: item.title,
+                image: item.image,
+                description: item.description.split("\n"),
+                // status: auction.render({
+                //     status: item.status,
+                //     time: item.timeStatus,
+                //     label: item.auctionStatus,
+                //     nextBid: item.nextBid,
+                //     history: item.history
+                // })
+            })
+        });
+
+        // if (item.status === 'купить') {
+        //     auction.focus();
+        // }
+    };
+    showItem(item);
+
+    // if (item) {
+        // api.getLotItem(item.id)
+        //     .then((result) => {
+        //         item.description = result.description;
+        //         showItem(item);
+    //         })
+    //         .catch((err) => {
+    //             console.error(err);
+    //         })
+    // } else {
+    //     modal.close();
+    // }
+});

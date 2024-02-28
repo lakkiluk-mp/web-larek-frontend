@@ -43,7 +43,11 @@ export class AppState extends Model<IAppState> {
         this.emitChanges('catalog:changed', { catalog: this.catalog });
     }
 
-
+    setPreview(item: LotItem): void {
+        this.preview = item.id;
+        this.emitChanges('card:open', item);
+        console.log('aaaaa')
+    }
 
 
     // toggleOrderedLot(id: string, isIncluded: boolean) {

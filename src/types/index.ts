@@ -13,6 +13,8 @@ export interface ILotItem {
 export interface ILotOrder {
 	isOredered: boolean;
 }
+
+export type LotStatus = 'купить' | 'в корзину';
 //Общий тип лота 
 export type ILot = ILotItem & ILotOrder;
 
