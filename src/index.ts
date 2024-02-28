@@ -8,7 +8,7 @@ import { Modal } from './components/common/Modal';
 import './scss/styles.scss';
 import { CatalogChangeEvent, ILot } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
-import { ensureElement, cloneTemplate } from './utils/utils';
+import { ensureElement, cloneTemplate, createElement } from './utils/utils';
 import { AuctionItem, Card } from './components/Card'
 
 
@@ -40,7 +40,7 @@ const appState = new AppState({}, events);
 const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
-// const bascet = new Basket(cloneTemplate(bascetTemplate), events);
+const basket = new Basket(cloneTemplate(basketTemplate), events);
 // const cardBasket = new Basket(cloneTemplate(cardBasketTemplate), {
 //     onClick: (name) => {
 //         if (name === 'closed') events.emit('basket:open');
@@ -79,13 +79,13 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
 // открытие модалки карточки событие
     events.on('card:select', (item: LotItem) => {
         appState.setPreview(item);
-        // console.log('sdsdsdsds')
+
     });
 
 
 // Изменен открытый выбранный лот
     events.on('card:open', (item: LotItem) => {
-    console.log('sdsdsd')
+
 
     const showItem = (item: LotItem) => {
         const card = new AuctionItem(cloneTemplate(cardPreviewTemplate));
@@ -93,14 +93,8 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
             content: card.render({
                 title: item.title,
                 image: item.image,
-                description: item.description.split("\n"),
-                // status: auction.render({
-                //     status: item.status,
-                //     time: item.timeStatus,
-                //     label: item.auctionStatus,
-                //     nextBid: item.nextBid,
-                //     history: item.history
-                // })
+                description: item.description,
+                price:item.price,
             })
         });
 
@@ -122,4 +116,22 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
     // } else {
     //     modal.close();
     // }
+});
+// открытие и отрисовка корзины
+events.on('basket:open', () => {
+    console.log('ssd')
+    modal.render({
+        content:basket.render()
+        
+    });
+});
+
+// Блокируем прокрутку страницы если открыта модалка
+events.on('modal:open', () => {
+    page.locked = true;
+});
+
+// ... и разблокируем
+events.on('modal:close', () => {
+    page.locked = false;
 });

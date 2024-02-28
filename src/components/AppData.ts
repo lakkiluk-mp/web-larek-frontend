@@ -20,9 +20,22 @@ export class LotItem extends Model<ILot> {
     status: ILotOrder;
     category:string;
 
+    protected myLastBusket = 0;
+
     constructor(private data:Partial<ILot>, events: IEvents) {
-       super(data,events)
+        super(data,events)
+     }
+
+    clearBusket() {
+        this.myLastBusket = 0;
     }
+
+    placeBusket(price: number): void {
+        this.price = price;
+
+    }
+
+ 
 }
 
 export class AppState extends Model<IAppState> {
@@ -46,25 +59,21 @@ export class AppState extends Model<IAppState> {
     setPreview(item: LotItem): void {
         this.preview = item.id;
         this.emitChanges('card:open', item);
-        console.log('aaaaa')
+    }
+
+    setPreviewBascet(item: LotItem): void {
+        // this.preview = item.id;
+        this.emitChanges('basket:open', item);
     }
 
 
-    // toggleOrderedLot(id: string, isIncluded: boolean) {
-    //     if (isIncluded) {
-    
-    //         this.order.items = _.uniq([...this.order.items, id]);
-    //     } else {
-    //         this.order.items = _.without(this.order.items, id);
-    //     }
-    // }
 
 
 
     // clearBasket() {
     //     this.order.items.forEach(id => {
     //         this.toggleOrderedLot(id, false);
-    //         this.catalog.find(it => it.id === id).clearBid();
+    //         this.catalog.find(it => it.id === id).clearBasket();
     //     });
     // }
 
