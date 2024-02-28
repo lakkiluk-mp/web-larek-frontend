@@ -83,10 +83,8 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
     });
 
 
-// Изменен открытый выбранный лот
+// Отрисовка модалки карточки 
     events.on('card:open', (item: LotItem) => {
-
-
     const showItem = (item: LotItem) => {
         const card = new AuctionItem(cloneTemplate(cardPreviewTemplate));
         modal.render({
@@ -95,28 +93,13 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
                 image: item.image,
                 description: item.description,
                 price:item.price,
+                button: item.isOredered
             })
         });
-
-        // if (item.status === 'купить') {
-        //     auction.focus();
-        // }
     };
     showItem(item);
-
-    // if (item) {
-        // api.getLotItem(item.id)
-        //     .then((result) => {
-        //         item.description = result.description;
-        //         showItem(item);
-    //         })
-    //         .catch((err) => {
-    //             console.error(err);
-    //         })
-    // } else {
-    //     modal.close();
-    // }
 });
+
 // открытие и отрисовка корзины
 events.on('basket:open', () => {
     console.log('ssd')

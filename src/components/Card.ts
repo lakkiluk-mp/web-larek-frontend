@@ -1,5 +1,5 @@
 import { Component } from './base/Component';
-import { ILot, LotStatus } from '../types';
+import { ILot, LotStatus, ILotOrder } from '../types';
 import {
 	bem,
 	createElement,
@@ -18,6 +18,7 @@ export interface ICard<T> {
 	image: string;
 	price: number | null;
 	category: string;
+	button?:boolean
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -131,6 +132,20 @@ export class AuctionItem extends Card<HTMLElement> {
 
 	constructor(container: HTMLElement, actions?: ICardActions) {
 		super('card', container, actions);
+	}
+
+	set button(value: boolean) {
+		const price = this._price;
+	
+		if (!price) {
+			this._button.disabled = true;
+		} else {
+			this._button.disabled = false;
+		}
+	
+		this.setText(this._button, value ? 'Удалить' : 'В корзину');
+		console.log(value)
+		// this._status = value;
 	}
 
 	set description(value: string) {
