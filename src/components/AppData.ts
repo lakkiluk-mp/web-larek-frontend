@@ -65,9 +65,10 @@ export class AppState extends Model<IAppState> {
     addInBasket(item:LotItem):void{
         this.catalog.map(el=>{
             if(item.id===el.id){
-                el.isOrdered=true
+                el.isOrdered=!el.isOrdered
             }
         })
+        this.emitChanges('card:open', item);
     }
 
 
