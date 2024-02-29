@@ -7,14 +7,15 @@ export interface ILotItem {
 	title: string;
 	category: string;
 	price: number | null;
+	isOrdered:boolean;
 }
 
 //Отслеживание карточки
 export interface ILotOrder {
-	isOredered: boolean;
+	isOrdered: boolean;
 }
 
-export type LotStatus = 'купить' | 'в корзину';
+export type LotStatus =  'в корзину' | 'удалить';
 //Общий тип лота 
 export type ILot = ILotItem & ILotOrder;
 

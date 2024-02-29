@@ -16,9 +16,10 @@ export class LotItem extends Model<ILot> {
     image: string;
     title: string;
     price: number;
-    isOredered:boolean; 
+    isOrdered:boolean; 
     status: ILotOrder;
     category:string;
+
 
     protected myLastBusket = 0;
 
@@ -60,15 +61,17 @@ export class AppState extends Model<IAppState> {
         this.preview = item.id;
         this.emitChanges('card:open', item);
     }
-
-    setPreviewBascet(item: LotItem): void {
-        // this.preview = item.id;
-        this.emitChanges('basket:open', item);
+    
+    addInBasket(item:LotItem):void{
+        this.catalog.map(el=>{
+            if(item.id===el.id){
+                el.isOrdered=true
+            }
+        })
     }
 
 
-
-
+}
 
     // clearBasket() {
     //     this.order.items.forEach(id => {
@@ -118,4 +121,3 @@ export class AppState extends Model<IAppState> {
     //     this.events.emit('formErrors:change', this.formErrors);
     //     return Object.keys(errors).length === 0;
     // }
-}

@@ -82,22 +82,39 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
 
     });
 
+    // events.on('card:basket', (item: LotItem) => {
+    //     appState. addInBasket(item);
+    // });
+
 
 // Отрисовка модалки карточки 
     events.on('card:open', (item: LotItem) => {
-    const showItem = (item: LotItem) => {
-        const card = new AuctionItem(cloneTemplate(cardPreviewTemplate));
+        const card = new AuctionItem(cloneTemplate(cardPreviewTemplate),
+        {
+            onClick: () => {
+                events.emit('card:open', item)
+                events.on('card:basket', (item: LotItem) => {
+                    appState. addInBasket(item);
+                });
+            }
+        });
+        console.log(card)
+         const buttonText = item.isOrdered ? 'Удалить' : "В корзину" ;
+         console.log(buttonText)
         modal.render({
             content: card.render({
                 title: item.title,
                 image: item.image,
                 description: item.description,
                 price:item.price,
-                button: item.isOredered
+                button: buttonText
+         
             })
         });
-    };
-    showItem(item);
+    
+    // };
+
+    // showItem(item);
 });
 
 // открытие и отрисовка корзины

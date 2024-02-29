@@ -18,7 +18,7 @@ export interface ICard<T> {
 	image: string;
 	price: number | null;
 	category: string;
-	button?:boolean
+	button?: string
 }
 
 export class Card<T> extends Component<ICard<T>> {
@@ -135,17 +135,16 @@ export class AuctionItem extends Card<HTMLElement> {
 	}
 
 	set button(value: boolean) {
-		const price = this._price;
+		const price = this._price.innerText;
 	
-		if (!price) {
+		if (price==="Бесценно") {
 			this._button.disabled = true;
 		} else {
 			this._button.disabled = false;
 		}
 	
-		this.setText(this._button, value ? 'Удалить' : 'В корзину');
-		console.log(value)
-		// this._status = value;
+		// this.setText(this._button, value ? 'Удалить' : 'В корзину');
+		// console.log(value)
 	}
 
 	set description(value: string) {
