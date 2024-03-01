@@ -91,7 +91,19 @@ export class AppState extends Model<IAppState> {
 
 		this.emitChanges('card:open', item);
         this.emitChanges('lot:changed', item);
-        this.emitChanges('basket:delItem', item);
+        // this.emitChanges('basket:delItem', item);
+	}
+
+    delFromBasketButton(item: LotItem): void {
+		this.catalog.map((el) => {
+			if (item.id === el.id) {
+				el.isOrdered = false;
+			}
+		});
+
+		// this.emitChanges('card:open', item);
+        this.emitChanges('lot:changed', item);
+        // this.emitChanges('basket:delItem', item);
 	}
 
 	handleBasket(item: LotItem): void {

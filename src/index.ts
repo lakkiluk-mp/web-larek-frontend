@@ -102,21 +102,19 @@ events.on('basket:open', () => {
 });
 
 
-events.on('basket:open', () => {
-	modal.render({
-		content: basket.render(),
-	});
-});
+events.on('basket:delItem', (item) => {
+    console.log(item)
+    appState.delFromBasketButton(item)
+
+   });
 
 events.on('lot:changed', () => {
 	page.counter = appState.getBasketLots()?.length;
 	basket.items = appState.getBasketLots().map((item, id) => {
 		const CardItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
 			onClick: () => {
-                console.log('ss')
-				events.emit('basket:delItem', () => {
-                    console.log('ss')
-				});
+                // console.log('ss')
+				events.emit('basket:delItem', item);
 			},
 		});
 		console.log('sd');
