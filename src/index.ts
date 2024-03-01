@@ -73,7 +73,7 @@ events.on('card:select', (item: LotItem) => {
 });
 
 events.on('card:basket', (item: LotItem) => {
-	appState.addInBasket(item);
+	appState.handleBasket(item);
 });
 
 // Отрисовка модалки карточки
@@ -83,7 +83,6 @@ events.on('card:open', (item: LotItem) => {
 			events.emit('card:basket', item);
 		},
 	});
-	console.log(card);
 	modal.render({
 		content: card.render({
 			title: item.title,
@@ -97,28 +96,38 @@ events.on('card:open', (item: LotItem) => {
 
 // открытие и отрисовка корзины
 events.on('basket:open', () => {
-	console.log('ssd');
 	modal.render({
 		content: basket.render(),
 	});
 });
 
 
-events.on('lot:changed', () => {
+events.on('basket:open', () => {
+	modal.render({
+		content: basket.render(),
+	});
+});
 
-	appState.basket.forEach((item, id) => {
-        const basketLots = [] 
-		const CardItem = new BasketItem(cloneTemplate(cardBasketTemplate),{
-               onClick: () => {
-                    // events.emit('card:basket', item);
-                },
-        })
-		 return  basketLots.push(CardItem.render({
+events.on('lot:changed', () => {
+	page.counter = appState.getBasketLots()?.length;
+	basket.items = appState.getBasketLots().map((item, id) => {
+		const CardItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
+			onClick: () => {
+                console.log('ss')
+				events.emit('basket:delItem', () => {
+                    console.log('ss')
+				});
+			},
+		});
+		console.log('sd');
+		return CardItem.render({
 			title: item.title,
 			price: item.price,
 			id: id + 1,
-		}));
+		});
 	});
+	console.log(basket, basket.items);
+	basket.total = appState.getTotal();
 });
 
 // Блокируем прокрутку страницы если открыта модалка

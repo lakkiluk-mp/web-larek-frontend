@@ -144,7 +144,7 @@ export class AuctionItem extends Card<HTMLElement> {
 		}
 	
 		this.setText(this._button, value ? 'Удалить' : 'В корзину');
-		console.log(value)
+
 	}
 
 	set description(value: string) {

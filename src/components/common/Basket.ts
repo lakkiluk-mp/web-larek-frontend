@@ -19,11 +19,11 @@ export class Basket extends Component<IBasketView> {
 	protected _total: HTMLElement;
 	protected _button: HTMLElement;
 
-	constructor(container: HTMLElement, protected events: EventEmitter) {
+	constructor(container: HTMLElement,  protected events: EventEmitter) {
 		super(container);
 
 		this._list = ensureElement<HTMLElement>('.basket__list', this.container);
-		this._total = this.container.querySelector('.basket__price');
+		this._total = ensureElement<HTMLElement>('.basket__price', this.container);
 		//  this._button = this.container.querySelector('.basket__action');
 
 		if (this._button) {
@@ -55,15 +55,16 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	set total(total: number) {
-		this.setText(this._total, formatNumber(total));
+	set total(price:number) {
+        // const totalPrice = this.container.querySelectorAll('.card__price')
+		this.setText(this._total, `${price} синапсов`);
 	}
 }
 
 interface IBasketItem {
 	title: string;
 	id: number;
-	price: string;
+	price: string| number
 }
 interface IClick {
 	onClick: (event: MouseEvent) => void;
@@ -74,6 +75,7 @@ export class BasketItem extends Component<IBasketItem> {
 	protected _price: HTMLElement;
 	protected _priceTotal: HTMLElement;
 	protected _button: HTMLButtonElement;
+    protected _prices: number[] = [];
 
 	constructor(container: HTMLElement, actions?: IClick) {
 		super(container);
@@ -82,8 +84,6 @@ export class BasketItem extends Component<IBasketItem> {
 		this._title = ensureElement<HTMLElement>('.card__title', container);
 		this._id = ensureElement<HTMLElement>('.basket__item-index', container);
 		this._price = ensureElement<HTMLElement>('.card__price', container);
-		this._priceTotal = ensureElement<HTMLElement>('basket__price', container);
-
 		this._button.addEventListener('click', actions.onClick);
 	}
 	set title(value: string) {
@@ -95,10 +95,15 @@ export class BasketItem extends Component<IBasketItem> {
 	}
 
 	set price(value: string) {
-		this.setText(this._price, value);
+		this.setText(this._price, `${value} синапсов`);
+        this._prices.push(parseFloat(value));
 	}
 
-	// set priceTotal(value: string) {
-	// 	this.setText(this._price, value);
-	// }
-}
+    // get totalPrice(): number {
+    //     console.log(this._priceTotal)
+    //     const total = this._prices.reduce((acc, curr) => acc + curr, 0);
+    //     this.setText(this._priceTotal, total.toString());
+    //     return total;
+    //   }
+    }
+
