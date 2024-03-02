@@ -6,9 +6,9 @@ import { EventEmitter } from './components/base/events';
 import { Basket, BasketItem } from './components/common/Basket';
 import { Modal } from './components/common/Modal';
 import './scss/styles.scss';
-import { CatalogChangeEvent, ILot, IOrderForm } from './types';
+import { CatalogChangeEvent, IOrderForm } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
-import { ensureElement, cloneTemplate, createElement } from './utils/utils';
+import { ensureElement, cloneTemplate } from './utils/utils';
 import { AuctionItem, Card } from './components/Card';
 import { Success } from './components/common/Success';
 
@@ -145,8 +145,7 @@ events.on('order:open', () => {
         })
     });
 });
-
-events.on('order.address:change', (errors: Partial<IOrderForm>) => {
+events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
     const { address,  payment } = errors;
     order.valid = !address && !payment;
     order.errors = Object.values({ address,  payment}).filter(i => !!i).join('; ');
@@ -154,7 +153,7 @@ events.on('order.address:change', (errors: Partial<IOrderForm>) => {
 
 // мадальное окно с телефоном
 events.on('order:submit', () => {
-    console.log(88888);
+    // console.log(88888);
     
     modal.render({
         content: contact.render({
@@ -167,10 +166,14 @@ events.on('order:submit', () => {
 });
 
 events.on(/^(order|contacts)\..*:change/, (data: { field: keyof IOrderForm, value: string }) => {
+
+
+
     appState.setOrderField(data.field, data.value);
 });
 
-events.on('contacts.email:change'&&'contacts.phone:change', (errors: Partial<IOrderForm>) => {
+// events.on('contacts.email:change'&&'contacts.phone:change', (errors: Partial<IOrderForm>) => {
+events.on('formErrorsContact:change', (errors: Partial<IOrderForm>) => {
     const { email, phone } = errors;
     contact.valid = !email && !phone;
     contact.errors = Object.values({phone, email}).filter(i => !!i).join('; ');

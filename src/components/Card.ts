@@ -1,12 +1,8 @@
 import { Component } from './base/Component';
-import { ILot, LotStatus, ILotOrder } from '../types';
 import {
-	bem,
-	createElement,
-	ensureElement,
-	formatNumber,
+	ensureElement
 } from '../utils/utils';
-import clsx from 'clsx';
+// import clsx from 'clsx';
 
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;

@@ -1,6 +1,4 @@
 import _ from 'lodash';
-import { formatNumber } from '../utils/utils';
-
 import { Model } from './base/Model';
 import {
 	IFormErrors,
@@ -10,7 +8,7 @@ import {
 	IOrderForm,
 	ILotOrder,
 } from '../types';
-import { EventEmitter, IEvents } from './base/events';
+import { IEvents } from './base/events';
 
 export type CatalogChangeEvent = {
 	catalog: ILot[];
@@ -66,9 +64,6 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('catalog:changed', { catalog: this.catalog });
 	}
 
-	// getTotal() {
-	//     return this.order.items.reduce((a, c) => a + this.catalog.find(it => it.id === c).price, 0)
-	// }
 
 	setPreview(item: LotItem): void {
 		this.preview = item.id;
@@ -133,19 +128,30 @@ export class AppState extends Model<IAppState> {
 	}
 
 	setOrderField(field: keyof IOrderForm, value: string) {
-		// console.log(this.order);
+		//  console.log(this.order);
 		this.order[field] = value;
 
-		if (this.validateOrder()) {
+		if (this.validateOrderAddress()) {
+			this.events.emit('order:ready', this.order);
+		}
+		if (this.validateOrderContact()) {
 			this.events.emit('order:ready', this.order);
 		}
 	}
-	validateOrder() {
+	validateOrderAddress() {
 		const errors: typeof this.formErrors = {};
 		if (!this.order.address) {
 			errors.address = 'Необходимо указать адрес';
 		}
-		// console.log(this.order.email);
+		if (!this.order.payment) {
+			errors.payment = 'Необходимо указать способ оплаты';
+		}
+		this.formErrors = errors;
+		this.events.emit('formErrors:change', this.formErrors);
+		return Object.keys(errors).length === 0;
+	}
+	validateOrderContact() {
+		const errors: typeof this.formErrors = {};
 		if (!this.order.email) {
 			errors.email = 'Необходимо указать email';
 		}
@@ -153,37 +159,8 @@ export class AppState extends Model<IAppState> {
 			errors.phone = 'Необходимо указать телефон';
 		}
 		this.formErrors = errors;
-		this.events.emit('formErrors:change', this.formErrors);
+		this.events.emit('formErrorsContact:change', this.formErrors);
 		return Object.keys(errors).length === 0;
 	}
 }
 
-// clearBasket() {
-//     this.order.items.forEach(id => {
-//         this.toggleOrderedLot(id, false);
-//         this.catalog.find(it => it.id === id).clearBasket();
-//     });
-// }
-
-// setPreview(item: ILot[]) {
-//     this.preview = item.id;
-//     this.emitChanges('preview:changed', item);
-// }
-
-// getActiveLots(): ILot[] {
-//     return this.catalog
-//         .filter(item => item.status === 'active' && item.isParticipate);
-// }
-
-// getClosedLots(): ILot[] {
-//     return this.catalog
-//         .filter(item => item.status === 'closed' && item.isMyBid)
-// }
-
-// setOrderField(field: keyof IOrderForm, value: string) {
-//     this.order[field] = value;
-
-//     if (this.validateOrder()) {
-//         this.events.emit('order:ready', this.order);
-//     }
-// }
