@@ -24,10 +24,11 @@ export class Basket extends Component<IBasketView> {
 
 		this._list = ensureElement<HTMLElement>('.basket__list', this.container);
 		this._total = ensureElement<HTMLElement>('.basket__price', this.container);
-		//  this._button = this.container.querySelector('.basket__action');
+		this._button = this.container.querySelector('.basket__button');
 
 		if (this._button) {
 			this._button.addEventListener('click', () => {
+                // console.log('sss')
 				events.emit('order:open');
 			});
 		}

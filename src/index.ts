@@ -1,15 +1,16 @@
 import { AppState, LotItem } from './components/AppData';
 import { LarekAPI } from './components/LarekAPI';
-import { Order } from './components/Order';
+import { OrderAddress, OrderCotnact } from './components/Order';
 import { Page } from './components/Page';
 import { EventEmitter } from './components/base/events';
 import { Basket, BasketItem } from './components/common/Basket';
 import { Modal } from './components/common/Modal';
 import './scss/styles.scss';
-import { CatalogChangeEvent, ILot } from './types';
+import { CatalogChangeEvent, ILot, IOrderForm } from './types';
 import { API_URL, CDN_URL } from './utils/constants';
 import { ensureElement, cloneTemplate, createElement } from './utils/utils';
 import { AuctionItem, Card } from './components/Card';
+import { Success } from './components/common/Success';
 
 const events = new EventEmitter();
 const api = new LarekAPI(CDN_URL, API_URL);
@@ -39,8 +40,10 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 
 // Переиспользуемые части интерфейса
 const basket = new Basket(cloneTemplate(basketTemplate), events);
-// const cardBasket = new Basket(cloneTemplate(cardBasketTemplate,events));
-// const order = new Order(cloneTemplate(orderTemplate), events);
+
+const order = new OrderAddress(cloneTemplate(orderTemplate), events);
+const contact = new OrderCotnact(cloneTemplate(contactTemplate), events);
+
 
 // запрос карточек
 api
@@ -101,13 +104,13 @@ events.on('basket:open', () => {
 	});
 });
 
-
-events.on('basket:delItem', (item) => {
-    console.log(item)
+//событие удаление по кнопке в корзине 
+events.on('basket:delItem', (item: LotItem) => {
+    // console.log(item)
     appState.delFromBasketButton(item)
 
    });
-
+//добавление в корзину и отрисовка добавленного 
 events.on('lot:changed', () => {
 	page.counter = appState.getBasketLots()?.length;
 	basket.items = appState.getBasketLots().map((item, id) => {
@@ -117,16 +120,91 @@ events.on('lot:changed', () => {
 				events.emit('basket:delItem', item);
 			},
 		});
-		console.log('sd');
+		// console.log('sd');
 		return CardItem.render({
 			title: item.title,
 			price: item.price,
 			id: id + 1,
 		});
 	});
-	console.log(basket, basket.items);
+	// console.log(basket, basket.items);
 	basket.total = appState.getTotal();
 });
+
+
+// мадальное окно с адресом при заказе 
+events.on('order:open', () => {
+    modal.render({
+        content: order.render({
+            address:order.address,
+            payment:order.payment,
+			// items:appState.getBasketLots(),
+			// total:appState.getTotal(),
+            valid: false,
+            errors: []
+        })
+    });
+});
+
+events.on('order.address:change', (errors: Partial<IOrderForm>) => {
+    const { address,  payment } = errors;
+    order.valid = !address && !payment;
+    order.errors = Object.values({ address,  payment}).filter(i => !!i).join('; ');
+});
+
+// мадальное окно с телефоном
+events.on('order:submit', () => {
+    console.log(88888);
+    
+    modal.render({
+        content: contact.render({
+            phone: '',
+            email: '',
+            valid: false,
+            errors: []
+        })
+    });
+});
+
+events.on(/^(order|contacts)\..*:change/, (data: { field: keyof IOrderForm, value: string }) => {
+    appState.setOrderField(data.field, data.value);
+});
+
+events.on('contacts.email:change'&&'contacts.phone:change', (errors: Partial<IOrderForm>) => {
+    const { email, phone } = errors;
+    contact.valid = !email && !phone;
+    contact.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
+});
+
+
+events.on('contacts:submit', () => {
+    api.orderLots({...appState.order, total:appState.getTotal(), items:appState.getBasketLots().map(el=>el.id)})
+        .then((result) => {
+            const success = new Success(cloneTemplate(successTemplate), {
+                onClick: () => {
+                    modal.close();
+                    appState.clearBasket();
+
+                    // events.emit('auction:changed');
+                }
+            });
+
+            modal.render({
+                content: success.render({
+					total:result.total
+				})
+            });
+        })
+        .catch(err => {
+            console.error(err);
+        });
+});
+
+
+
+
+
+
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {

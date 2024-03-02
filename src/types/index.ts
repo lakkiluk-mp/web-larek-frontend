@@ -19,18 +19,16 @@ export type LotStatus =  'в корзину' | 'удалить';
 //Общий тип лота 
 export type ILot = ILotItem & ILotOrder;
 
-//Выбор оплаты 
-export type IPaymentType = 'Онлайн' | 'При получении';
 
 //Интерфейс формы введения адреса и способа оплаты 
 export interface IOrderDeliveryForm {
 	address: string;
-	payment: IPaymentType;
+	payment: string;
 }
 //Интефрейс формы введения контактных данных 
 export interface IOrderContactsForm {
 	email: string;
-	tel: string;
+	phone: string;
 }
 
 //Общий тип формы заказа 
