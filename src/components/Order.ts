@@ -63,7 +63,7 @@ export class OrderAddress extends Form<IOrderForm> {
     //     return this.payment
     // }
     protected setPayment(field: keyof IOrderForm, value: string) {
-            this.events.emit('order.payment:changed', {
+            this.events.emit('order.payment:change', {
                 field,
                 value,
             });
