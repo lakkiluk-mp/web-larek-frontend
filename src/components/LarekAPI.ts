@@ -4,7 +4,7 @@ import {IOrder, IOrderAPI, ILot} from "../types";
 export interface ILarekAPI {
     getLotList: () => Promise<ILot[]>;
     getLotItem: (id: string) => Promise<ILot>;
-    orderLots: (order: IOrder) => Promise<IOrderAPI>;
+    orderLots: (order: IOrderAPI) => Promise<IOrderAPI>;
 }
 
 export class LarekAPI extends Api implements ILarekAPI {
@@ -36,7 +36,7 @@ export class LarekAPI extends Api implements ILarekAPI {
     }
 
 
-    orderLots(order: IOrder): Promise<IOrderAPI> {
+    orderLots(order: IOrderAPI): Promise<IOrderAPI> {
         return this.post('/order', order).then(
             (data: IOrderAPI) => data
         );

@@ -21,7 +21,7 @@ export type ILot = ILotItem & ILotOrder;
 
 
 //Интерфейс формы введения адреса и способа оплаты 
-export interface IOrderDeliveryForm {
+export interface IOrderAddressForm {
 	address: string;
 	payment: string;
 }
@@ -32,7 +32,7 @@ export interface IOrderContactsForm {
 }
 
 //Общий тип формы заказа 
-export type IOrderForm = IOrderDeliveryForm & IOrderContactsForm;
+export type IOrderForm = IOrderAddressForm & IOrderContactsForm;
 
 export interface IOrder extends IOrderForm {
 	items: ILot[];

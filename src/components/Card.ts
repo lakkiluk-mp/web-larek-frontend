@@ -75,8 +75,11 @@ export class Card<T> extends Component<ICard<T>> {
 		const categoryElement = this.container.querySelector(
 			`.${this.blockName}__category`
 		);
+
 		categoryElement.textContent = value;
+		
 		let categoryValue = '';
+
 		switch (value) {
 			case 'софт-скил':
 				categoryValue = 'soft';

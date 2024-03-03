@@ -70,7 +70,7 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('card:open', item);
 	}
 
-	addInBasket(item: LotItem): void {
+	addToBasket(item: LotItem): void {
 		this.catalog.map((el) => {
 			if (item.id === el.id) {
 				el.isOrdered = true;
@@ -81,7 +81,7 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('lot:changed',item);
 	}
 
-	delFromBasket(item: LotItem): void {
+	deleteFromBasket(item: LotItem): void {
 		this.catalog.map((el) => {
 			if (item.id === el.id) {
 				el.isOrdered = false;
@@ -99,7 +99,7 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('lot:changed');
 	}
 
-	delFromBasketButton(item: LotItem): void {
+	deleteFromBasketTotal(item: LotItem): void {
 		this.catalog.map((el) => {
 			if (item.id === el.id) {
 				el.isOrdered = false;
@@ -111,11 +111,10 @@ export class AppState extends Model<IAppState> {
 	}
 
 	handleBasket(item: LotItem): void {
-		// console.log(item)
 		if (item.isOrdered) {
-			this.delFromBasket(item);
+			this.deleteFromBasket(item);
 		} else {
-			this.addInBasket(item);
+			this.addToBasket(item);
 		}
 	}
 
@@ -128,38 +127,48 @@ export class AppState extends Model<IAppState> {
 	}
 
 	setOrderField(field: keyof IOrderForm, value: string) {
-		//  console.log(this.order);
 		this.order[field] = value;
 
 		if (this.validateOrderAddress()) {
 			this.events.emit('order:ready', this.order);
 		}
+
 		if (this.validateOrderContact()) {
 			this.events.emit('order:ready', this.order);
 		}
 	}
+
 	validateOrderAddress() {
 		const errors: typeof this.formErrors = {};
+
 		if (!this.order.address) {
-			errors.address = 'Необходимо указать адрес';
+			errors
+			.address = 'Необходимо указать адрес';
 		}
 		if (!this.order.payment) {
 			errors.payment = 'Необходимо указать способ оплаты';
 		}
+
 		this.formErrors = errors;
 		this.events.emit('formErrors:change', this.formErrors);
+
 		return Object.keys(errors).length === 0;
 	}
+
 	validateOrderContact() {
 		const errors: typeof this.formErrors = {};
+
 		if (!this.order.email) {
 			errors.email = 'Необходимо указать email';
 		}
+
 		if (!this.order.phone) {
 			errors.phone = 'Необходимо указать телефон';
 		}
+
 		this.formErrors = errors;
 		this.events.emit('formErrorsContact:change', this.formErrors);
+
 		return Object.keys(errors).length === 0;
 	}
 }

@@ -28,7 +28,6 @@ export class Basket extends Component<IBasketView> {
 				this._button.disabled = true;
 			}
 			this._button.addEventListener('click', () => {
-                // console.log('sss')
 				events.emit('order:open');
 			});
 		}
@@ -102,11 +101,6 @@ export class BasketItem extends Component<IBasketItem> {
         this._prices.push(parseFloat(value));
 	}
 
-    // get totalPrice(): number {
-    //     console.log(this._priceTotal)
-    //     const total = this._prices.reduce((acc, curr) => acc + curr, 0);
-    //     this.setText(this._priceTotal, total.toString());
-    //     return total;
-    //   }
+  
     }
 

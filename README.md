@@ -105,6 +105,7 @@ interface IAppState {
 	basket: ILot[];
 	preview: string | null;
 	order: IOrder | null;
+	loading: boolean;
 }
 ```
 
@@ -113,23 +114,36 @@ interface IAppState {
 
 ```
 interface ILotItem {
-	title: string;
 	id: string;
-	description?: string;
+	description: string;
 	image: string;
-	category: LotCategory;
+	title: string;
+	category: string;
 	price: number | null;
+	isOrdered:boolean;
 }
 ```
 
-## Класс `Order`
+## Класс `OrderContact и OrderAddress`
 Класс данных процесса оформления заказа. Содержит свойства, которые отображаются на полях соответствующих форм и реализует простейшую логику валидации свойств на наличие значений.
-```
-interface ILotOrder {
-	oredered: boolean;
-}
-```
+- `email` - почта для связи
+- `phone` - телефон для связи
 
+- `payment` - способ оплаты
+- `address` - адрес доставки
+
+```
+interface IOrderAddressForm {
+	address: string;
+	payment: string;
+}
+
+interface IOrderContactsForm {
+	email: string;
+	phone: string;
+}
+
+```
 
 # Компоненты представления
 
@@ -137,10 +151,17 @@ interface ILotOrder {
 Отвечает за управление состоянием и отображением страницы в приложении.
 
 - `counter` - элемент отображения количества товаров в корзине
-- `galery` - элемент отображения всех доступных карточек
+- `catalog` - элемент отображения всех доступных карточек
 - `wrapper` - обёртка, позволяющая блокировать прокрутку страницы при открытии модального окна
 - `basket` - кнопка для отображения корзины. Клик по кнопке вызывает событие basket:open
 
+```
+interface IPage {
+    counter: number;
+    catalog: HTMLElement[];
+    locked: boolean;
+}
+```
 ## Класс `Modal`
 Класс представления модального окна. Позволяет задать
 
@@ -162,32 +183,6 @@ interface ILotOrder {
 
 - `submit` - кнопку отправки формы
 - `errors` - блок отображения ошибок в форме
-
-## Класс `DeliveryForm`
-Класс представления, наследующийся от класса Form, для отображения формы оформления заказа с информацией об способе оплаты с адресом доставки. Задаются следующие свойства:
-
-- `payment` - способ оплаты
-- `address` - адрес доставки
-
-```
-export interface IOrderDeliveryForm {
-	adress: string;
-	payment: IPaymentType;
-}
-```
-
-## Класс `ContactsForm`
-Класс представления, наследующийся от класса Form, для отображения формы оформления заказа с контактной информацией. Задаются следующие свойства:
-
-- `email` - почта для связи
-- `phone` - телефон для связи
-
-```
-interface IOrderContactsForm {
-	email: string;
-	tel: string;
-}
-```
 
 
 ## Класс `Success`
@@ -215,14 +210,11 @@ interface IOrderContactsForm {
 	-'lot:changed' - добавление/удаление из корзины карточка 
 	-'basket:delItem'- удаление из корзины по кнопке в корзине
     -'modal:open' - открытие модального окна 
-	-'modal:close' - закрытие модального окна  
-	-'order_payment:open' - открытие формы вида оплаты 
-	-'order:submit' - заполнение первой вида оплаты  
-	-'order_contacts:open' - открытие формы с контактными данными 
-	-'contacts:submit' - заполнение формы с контактными данными 
-	-'order:post', завершаем заказ
-	-'payment:changed' - выбор способа оплаты
-	-'order.address:change'- изменение адреса доставки 
-	-'contacts.email:change' - изменение почты 
-	-'contacts.phone:change' - изменение телефона 
+	-'modal:close' - закрытие модального окна
+	-'order:open' - открытие формы с выбором оплаты и вводом адреса
+	-'order:submit' - подтверждение адреса и способа оплаты/открытие формы заполнения телефона и почты
+	-'contacts:submit' -  подтверждение заполнение формы с контактными данными и открытие модального окна успешного оформления
+	-'formErrorsContact:change' - валидация почты и номера  
+	-'formErrors:change'- валидация способа оплаты и адреса  
+
 

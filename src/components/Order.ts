@@ -3,7 +3,7 @@ import { IOrderForm, } from "../types";
 import { IEvents} from "./base/events";
 import {ensureElement} from "../utils/utils";
 
-export class OrderCotnact extends Form<IOrderForm> {
+export class OrderContact extends Form<IOrderForm> {
     constructor(container: HTMLFormElement, events: IEvents) {
         super(container, events);
     }
@@ -31,26 +31,24 @@ export class OrderAddress extends Form<IOrderForm> {
      this._buttonsPayCash =  this._containerPay.querySelector('[name=cash]')
      this._buttonsPayOnline = this._containerPay.querySelector('[name=card]')
 
-// console.log(this._buttonsPayCash, this._buttonsPayOnline)
     if (this._buttonsPayCash) {
-        this._buttonsPayCash.addEventListener('click', (e) => {
-           e.preventDefault()
-           this.setPayment('payment','При получении')
-            this._buttonsPayCash.classList.add('button_alt-active');
-            this._buttonsPayOnline.classList.remove('button_alt-active');
-        })
-    }  if (this._buttonsPayOnline){
-        this._buttonsPayOnline.addEventListener('click', (e) => {
-            e.preventDefault()
-            this.setPayment('payment','Онлайн')
-            this._buttonsPayOnline.classList.add('button_alt-active');
-            this._buttonsPayCash.classList.remove('button_alt-active');
-        })
-    }
-    // console.log(this._buttonsPayCash, this._buttonsPayOnline)
-    // console.log(this.container.elements)
+			this._buttonsPayCash.addEventListener('click', (e) => {
+				e.preventDefault();
+				this.setPayment('payment', 'При получении');
+				this._buttonsPayCash.classList.add('button_alt-active');
+				this._buttonsPayOnline.classList.remove('button_alt-active');
+			});
+		}
 
-    // console.log(document.querySelector('.button_alt-active'))
+	if (this._buttonsPayOnline) {
+		this._buttonsPayOnline.addEventListener('click', (e) => {
+			e.preventDefault();
+			this.setPayment('payment', 'Онлайн');
+			this._buttonsPayOnline.classList.add('button_alt-active');
+			this._buttonsPayCash.classList.remove('button_alt-active');
+		});
+	}
+   
     }
 
     set address(value: string) {

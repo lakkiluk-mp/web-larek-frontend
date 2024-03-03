@@ -1,6 +1,6 @@
 import { AppState, LotItem } from './components/AppData';
 import { LarekAPI } from './components/LarekAPI';
-import { OrderAddress, OrderCotnact } from './components/Order';
+import { OrderAddress, OrderContact } from './components/Order';
 import { Page } from './components/Page';
 import { EventEmitter } from './components/base/events';
 import { Basket, BasketItem } from './components/common/Basket';
@@ -42,7 +42,7 @@ const modal = new Modal(ensureElement<HTMLElement>('#modal-container'), events);
 const basket = new Basket(cloneTemplate(basketTemplate), events);
 
 const order = new OrderAddress(cloneTemplate(orderTemplate), events);
-const contact = new OrderCotnact(cloneTemplate(contactTemplate), events);
+const contact = new OrderContact(cloneTemplate(contactTemplate), events);
 
 
 // запрос карточек
@@ -106,28 +106,26 @@ events.on('basket:open', () => {
 
 //событие удаление по кнопке в корзине 
 events.on('basket:delItem', (item: LotItem) => {
-    // console.log(item)
-    appState.delFromBasketButton(item)
+    appState.deleteFromBasketTotal(item)
 
    });
 //добавление в корзину и отрисовка добавленного 
 events.on('lot:changed', () => {
 	page.counter = appState.getBasketLots()?.length;
+
 	basket.items = appState.getBasketLots().map((item, id) => {
 		const CardItem = new BasketItem(cloneTemplate(cardBasketTemplate), {
 			onClick: () => {
-                // console.log('ss')
 				events.emit('basket:delItem', item);
 			},
 		});
-		// console.log('sd');
 		return CardItem.render({
 			title: item.title,
 			price: item.price,
 			id: id + 1,
 		});
 	});
-	// console.log(basket, basket.items);
+
 	basket.total = appState.getTotal();
 });
 
@@ -153,24 +151,22 @@ events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
 
 // мадальное окно с телефоном
 events.on('order:submit', () => {
-    // console.log(88888);
-    
-    modal.render({
-        content: contact.render({
-            phone: '',
-            email: '',
-            valid: false,
-            errors: []
-        })
-    });
+	modal.render({
+		content: contact.render({
+			phone: '',
+			email: '',
+			valid: false,
+			errors: [],
+		}),
+	});
 });
 
-events.on(/^(order|contacts)\..*:change/, (data: { field: keyof IOrderForm, value: string }) => {
-
-
-
-    appState.setOrderField(data.field, data.value);
-});
+events.on(
+	/^(order|contacts)\..*:change/,
+	(data: { field: keyof IOrderForm; value: string }) => {
+		appState.setOrderField(data.field, data.value);
+	}
+);
 
 // events.on('contacts.email:change'&&'contacts.phone:change', (errors: Partial<IOrderForm>) => {
 events.on('formErrorsContact:change', (errors: Partial<IOrderForm>) => {
