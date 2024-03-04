@@ -1,8 +1,5 @@
 import { Component } from '../base/Component';
-import {
-	createElement,
-	ensureElement,
-} from '../../utils/utils';
+import { createElement, ensureElement } from '../../utils/utils';
 import { EventEmitter } from '../base/events';
 
 interface IBasketView {
@@ -16,7 +13,7 @@ export class Basket extends Component<IBasketView> {
 	protected _total: HTMLElement;
 	protected _button: HTMLButtonElement;
 
-	constructor(container: HTMLElement,  protected events: EventEmitter) {
+	constructor(container: HTMLElement, protected events: EventEmitter) {
 		super(container);
 
 		this._list = ensureElement<HTMLElement>('.basket__list', this.container);
@@ -24,7 +21,7 @@ export class Basket extends Component<IBasketView> {
 		this._button = this.container.querySelector('.basket__button');
 
 		if (this._button) {
-			if (!this.items?.length){
+			if (!this.items?.length) {
 				this._button.disabled = true;
 			}
 			this._button.addEventListener('click', () => {
@@ -38,7 +35,7 @@ export class Basket extends Component<IBasketView> {
 	set items(items: HTMLElement[]) {
 		if (items.length) {
 			this._list.replaceChildren(...items);
-			this._button.disabled = false
+			this._button.disabled = false;
 		} else {
 			this._list.replaceChildren(
 				createElement<HTMLParagraphElement>('p', {
@@ -57,8 +54,7 @@ export class Basket extends Component<IBasketView> {
 		}
 	}
 
-	set total(price:number) {
-        // const totalPrice = this.container.querySelectorAll('.card__price')
+	set total(price: number) {
 		this.setText(this._total, `${price} синапсов`);
 	}
 }
@@ -66,7 +62,7 @@ export class Basket extends Component<IBasketView> {
 interface IBasketItem {
 	title: string;
 	id: number;
-	price: string| number
+	price: string | number;
 }
 interface IClick {
 	onClick: (event: MouseEvent) => void;
@@ -75,9 +71,8 @@ export class BasketItem extends Component<IBasketItem> {
 	protected _title: HTMLElement;
 	protected _id: HTMLElement;
 	protected _price: HTMLElement;
-	protected _priceTotal: HTMLElement;
 	protected _button: HTMLButtonElement;
-    protected _prices: number[] = [];
+	protected _prices: number[] = [];
 
 	constructor(container: HTMLElement, actions?: IClick) {
 		super(container);
@@ -98,9 +93,6 @@ export class BasketItem extends Component<IBasketItem> {
 
 	set price(value: string) {
 		this.setText(this._price, `${value} синапсов`);
-        this._prices.push(parseFloat(value));
+		this._prices.push(parseFloat(value));
 	}
-
-  
-    }
-
+}

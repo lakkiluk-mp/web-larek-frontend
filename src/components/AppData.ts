@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import { Model } from './base/Model';
 import {
 	IFormErrors,
@@ -24,26 +23,11 @@ export class LotItem extends Model<ILot> {
 	isOrdered: boolean;
 	status: ILotOrder;
 	category: string;
-
-	protected myLastBusket = 0;
-
-	constructor(private data: Partial<ILot>, events: IEvents) {
-		super(data, events);
-	}
-
-	clearBusket() {
-		this.myLastBusket = 0;
-	}
-
-	placeBusket(price: number): void {
-		this.price = price;
-	}
 }
 
 export class AppState extends Model<IAppState> {
 	basket: ILot[];
 	catalog: ILot[];
-	loading: boolean;
 	order: IOrder = {
 		email: '',
 		phone: '',
@@ -64,7 +48,6 @@ export class AppState extends Model<IAppState> {
 		this.emitChanges('catalog:changed', { catalog: this.catalog });
 	}
 
-
 	setPreview(item: LotItem): void {
 		this.preview = item.id;
 		this.emitChanges('card:open', item);
@@ -77,8 +60,8 @@ export class AppState extends Model<IAppState> {
 			}
 		});
 
-		this.emitChanges('card:open',item);
-		this.emitChanges('lot:changed',item);
+		this.emitChanges('card:open', item);
+		this.emitChanges('lot:changed', item);
 	}
 
 	deleteFromBasket(item: LotItem): void {
@@ -88,9 +71,8 @@ export class AppState extends Model<IAppState> {
 			}
 		});
 
-		this.emitChanges('card:open',item);
-		this.emitChanges('lot:changed',item);
-		// this.emitChanges('basket:delItem', item);
+		this.emitChanges('card:open', item);
+		this.emitChanges('lot:changed', item);
 	}
 	clearBasket(): void {
 		this.catalog.forEach((el) => {
@@ -105,9 +87,7 @@ export class AppState extends Model<IAppState> {
 				el.isOrdered = false;
 			}
 		});
-		// this.emitChanges('card:open', item);
 		this.emitChanges('lot:changed', item);
-		// this.emitChanges('basket:delItem', item);
 	}
 
 	handleBasket(item: LotItem): void {
@@ -142,8 +122,7 @@ export class AppState extends Model<IAppState> {
 		const errors: typeof this.formErrors = {};
 
 		if (!this.order.address) {
-			errors
-			.address = 'Необходимо указать адрес';
+			errors.address = 'Необходимо указать адрес';
 		}
 		if (!this.order.payment) {
 			errors.payment = 'Необходимо указать способ оплаты';
@@ -172,4 +151,3 @@ export class AppState extends Model<IAppState> {
 		return Object.keys(errors).length === 0;
 	}
 }
-

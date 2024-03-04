@@ -1,5 +1,4 @@
-
-//Карточка 
+//Карточка
 export interface ILotItem {
 	id: string;
 	description: string;
@@ -7,7 +6,7 @@ export interface ILotItem {
 	title: string;
 	category: string;
 	price: number | null;
-	isOrdered:boolean;
+	isOrdered: boolean;
 }
 
 //Отслеживание карточки
@@ -15,23 +14,21 @@ export interface ILotOrder {
 	isOrdered: boolean;
 }
 
-export type LotStatus =  'в корзину' | 'удалить';
-//Общий тип лота 
+//Общий тип лота
 export type ILot = ILotItem & ILotOrder;
 
-
-//Интерфейс формы введения адреса и способа оплаты 
+//Интерфейс формы введения адреса и способа оплаты
 export interface IOrderAddressForm {
 	address: string;
 	payment: string;
 }
-//Интефрейс формы введения контактных данных 
+//Интефрейс формы введения контактных данных
 export interface IOrderContactsForm {
 	email: string;
 	phone: string;
 }
 
-//Общий тип формы заказа 
+//Общий тип формы заказа
 export type IOrderForm = IOrderAddressForm & IOrderContactsForm;
 
 export interface IOrder extends IOrderForm {

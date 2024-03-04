@@ -44,7 +44,6 @@ const basket = new Basket(cloneTemplate(basketTemplate), events);
 const order = new OrderAddress(cloneTemplate(orderTemplate), events);
 const contact = new OrderContact(cloneTemplate(contactTemplate), events);
 
-
 // запрос карточек
 api
 	.getLotList()
@@ -62,12 +61,10 @@ events.on<CatalogChangeEvent>('catalog:changed', () => {
 		return card.render({
 			title: item.title,
 			image: item.image,
-			// description: item.about,
 			price: item.price,
 			category: item.category,
 		});
 	});
-	// page.counter = appData.getClosedLots().length;
 });
 
 // открытие модалки карточки событие
@@ -104,12 +101,11 @@ events.on('basket:open', () => {
 	});
 });
 
-//событие удаление по кнопке в корзине 
+//событие удаление по кнопке в корзине
 events.on('basket:delItem', (item: LotItem) => {
-    appState.deleteFromBasketTotal(item)
-
-   });
-//добавление в корзину и отрисовка добавленного 
+	appState.deleteFromBasketTotal(item);
+});
+//добавление в корзину и отрисовка добавленного
 events.on('lot:changed', () => {
 	page.counter = appState.getBasketLots()?.length;
 
@@ -129,24 +125,23 @@ events.on('lot:changed', () => {
 	basket.total = appState.getTotal();
 });
 
-
-// мадальное окно с адресом при заказе 
+// мадальное окно с адресом при заказе
 events.on('order:open', () => {
-    modal.render({
-        content: order.render({
-            address:order.address,
-            payment:order.payment,
-			// items:appState.getBasketLots(),
-			// total:appState.getTotal(),
-            valid: false,
-            errors: []
-        })
-    });
+	modal.render({
+		content: order.render({
+			address: order.address,
+			payment: order.payment,
+			valid: false,
+			errors: [],
+		}),
+	});
 });
 events.on('formErrors:change', (errors: Partial<IOrderForm>) => {
-    const { address,  payment } = errors;
-    order.valid = !address && !payment;
-    order.errors = Object.values({ address,  payment}).filter(i => !!i).join('; ');
+	const { address, payment } = errors;
+	order.valid = !address && !payment;
+	order.errors = Object.values({ address, payment })
+		.filter((i) => !!i)
+		.join('; ');
 });
 
 // мадальное окно с телефоном
@@ -168,42 +163,38 @@ events.on(
 	}
 );
 
-// events.on('contacts.email:change'&&'contacts.phone:change', (errors: Partial<IOrderForm>) => {
 events.on('formErrorsContact:change', (errors: Partial<IOrderForm>) => {
-    const { email, phone } = errors;
-    contact.valid = !email && !phone;
-    contact.errors = Object.values({phone, email}).filter(i => !!i).join('; ');
+	const { email, phone } = errors;
+	contact.valid = !email && !phone;
+	contact.errors = Object.values({ phone, email })
+		.filter((i) => !!i)
+		.join('; ');
 });
-
 
 events.on('contacts:submit', () => {
-    api.orderLots({...appState.order, total:appState.getTotal(), items:appState.getBasketLots().map(el=>el.id)})
-        .then((result) => {
-            const success = new Success(cloneTemplate(successTemplate), {
-                onClick: () => {
-                    modal.close();
-                    appState.clearBasket();
-
-                    // events.emit('auction:changed');
-                }
-            });
-
-            modal.render({
-                content: success.render({
-					total:result.total
-				})
-            });
-        })
-        .catch(err => {
-            console.error(err);
-        });
+	api
+		.orderLots({
+			...appState.order,
+			total: appState.getTotal(),
+			items: appState.getBasketLots().map((el) => el.id),
+		})
+		.then((result) => {
+			const success = new Success(cloneTemplate(successTemplate), {
+				onClick: () => {
+					modal.close();
+				},
+			});
+			appState.clearBasket();
+			modal.render({
+				content: success.render({
+					total: result.total,
+				}),
+			});
+		})
+		.catch((err) => {
+			console.error(err);
+		});
 });
-
-
-
-
-
-
 
 // Блокируем прокрутку страницы если открыта модалка
 events.on('modal:open', () => {

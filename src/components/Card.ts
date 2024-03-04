@@ -1,23 +1,21 @@
 import { Component } from './base/Component';
-import {
-	ensureElement
-} from '../utils/utils';
+import { ensureElement } from '../utils/utils';
 // import clsx from 'clsx';
 
 interface ICardActions {
 	onClick: (event: MouseEvent) => void;
 }
 
-export interface ICard<T> {
+export interface ICard {
 	title: string;
 	description?: string | string[];
 	image: string;
 	price: number | null;
 	category: string;
-	button?: boolean
+	button?: boolean;
 }
 
-export class Card<T> extends Component<ICard<T>> {
+export class Card extends Component<ICard> {
 	protected _id: HTMLElement;
 	protected _title: HTMLElement;
 	protected _image?: HTMLImageElement;
@@ -77,7 +75,7 @@ export class Card<T> extends Component<ICard<T>> {
 		);
 
 		categoryElement.textContent = value;
-		
+
 		let categoryValue = '';
 
 		switch (value) {
@@ -126,7 +124,7 @@ export class Card<T> extends Component<ICard<T>> {
 	}
 }
 
-export class AuctionItem extends Card<HTMLElement> {
+export class AuctionItem extends Card {
 	protected _status: HTMLElement;
 
 	constructor(container: HTMLElement, actions?: ICardActions) {
@@ -135,21 +133,17 @@ export class AuctionItem extends Card<HTMLElement> {
 
 	set button(value: boolean) {
 		const price = this._price.innerText;
-	
-		if (price==="Бесценно") {
+
+		if (price === 'Бесценно') {
 			this._button.disabled = true;
 		} else {
 			this._button.disabled = false;
 		}
-	
-		this.setText(this._button, value ? 'Удалить' : 'В корзину');
 
+		this.setText(this._button, value ? 'Удалить' : 'В корзину');
 	}
 
 	set description(value: string) {
 		this.setText(this._description, value);
 	}
 }
-
-
-
